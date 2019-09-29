@@ -15,7 +15,9 @@ class BaseTestEnv(TestEnv):
 		self.evaluator = kwargs.get('evaluator')
 
 	def terminated(self, e):
-		return self.evaluator.terminated(e)
+		self.evaluator.terminated(e)
+		self.evaluator.done()
+		return self.evaluator.result
 
 
 class SupervisedLearningTestEnv(BaseTestEnv):

@@ -10,7 +10,8 @@ class BaseEvaluationResult(EvaluationResult):
         self.error = kwargs.get('error', None)
 
     def __str__(self):
-        if self.error: return self.error
+        if self.error: 
+            return "{}: {}".format(type(self.error).__name__, str(self.error))
         str_results = " ".join(map(lambda x: str(x), self.results))
         return str_results
 
