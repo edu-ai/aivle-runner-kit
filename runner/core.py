@@ -1,10 +1,10 @@
-from .utils import time
+from .utils import time, prints
 from collections import namedtuple
 from enum import Enum
 import json
 
 
-TestCaseResult = namedtuple('TestCaseResult', ['test_case', 'evaluation', 'error'])
+TestCaseResult = namedtuple('TestCaseResult', ['test_case', 'evaluation', 'error', 'output'])
 TestSuiteResult = namedtuple('TestSuiteResult', ['test_suite', 'results', 'point'])
 
 
@@ -18,14 +18,15 @@ class TestCase(object):
 	def run(self, agent):
 		error = None
 		evaluation = None
+		output = prints.Output()
 		try:
-			with time.time_limit(self.time_limit):
+			with time.time_limit(self.time_limit), prints.RedirectPrints(output):
 				evaluation = self.test_env.run(agent, runs=self.runs)
 		except Exception as e: # also catch TimeoutException
 			error = e
 			evaluation = self.test_env.terminated(e)
 		finally:
-			return TestCaseResult(self, evaluation, error)
+			return TestCaseResult(self, evaluation, error, output.value)
 
 
 class TestSuite(object):
@@ -50,6 +51,7 @@ class TestSuite(object):
 		test_cases = {}
 		for res in self.results:
 			test_cases[res.test_case.identifier] = res.evaluation.json
+			test_cases[res.test_case.identifier]['output'] = res.output
 		data = {
 			'identifier': self.identifier,
 			'test_cases': test_cases,

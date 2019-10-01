@@ -1,7 +1,6 @@
 import json
 import numpy as np
 import random
-from .utils import prints
 
 '''
 agent
@@ -26,8 +25,7 @@ def main():
 	except ModuleNotFoundError as e:
 		raise AgentNotFound(str(e))
 
-	with prints.IgnorePrints():
-		output = test_suite.run(create_agent)
+	output = test_suite.run(create_agent)
 
 	print(test_suite.json_output)
 
