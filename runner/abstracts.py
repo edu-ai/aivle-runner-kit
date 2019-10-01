@@ -59,6 +59,9 @@ class Agent(object):
     def __init__(self, *args, **kwargs):
         pass
 
+    def initialize(self, **kwargs):
+        raise NotImplemented
+
     def step(self, state, *args, **kwargs):
         raise NotImplemented
 

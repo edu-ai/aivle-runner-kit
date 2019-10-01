@@ -11,8 +11,13 @@ class TestEnv(object):
 
 class BaseTestEnv(TestEnv):
 	def __init__(self, *args, **kwargs):
-		self.env = kwargs.get('env')
-		self.evaluator = kwargs.get('evaluator')
+		self.env = kwargs.pop('env')
+		self.evaluator = kwargs.pop('evaluator')
+		self.agent_init = kwargs.pop('agent_init', {})
+		for k, v in kwargs:
+			if hasattr(self, k):
+				raise Exception('Attribute: {} already exists'.format(k))
+			setattr(self, k, v)
 
 	def terminated(self, e):
 		self.evaluator.terminated(e)
@@ -39,6 +44,7 @@ class ReinforcementLearningTestEnv(BaseTestEnv):
 		runs = kwargs.get('runs', 1)
 		state = self.env.reset()
 		self.evaluator.reset()
+		agent.initialize(**self.agent_init)
 		while True:
 			if runs <= 0:
 				break
