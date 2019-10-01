@@ -30,10 +30,11 @@ class TestCase(object):
 
 
 class TestSuite(object):
-	def __init__(self, identifier, test_cases, point_fn=None):
+	def __init__(self, identifier, test_cases, point_fn=None, show_outputs=False):
 		self.identifier = identifier
 		self.test_cases = test_cases
 		self.point_fn = point_fn
+		self.show_outputs = show_outputs
 
 	def run(self, agent_create_fn):
 		self.results = []
@@ -51,7 +52,8 @@ class TestSuite(object):
 		test_cases = {}
 		for res in self.results:
 			test_cases[res.test_case.identifier] = res.evaluation.json
-			test_cases[res.test_case.identifier]['output'] = res.output
+			if self.show_outputs:
+				test_cases[res.test_case.identifier]['output'] = res.output
 		data = {
 			'identifier': self.identifier,
 			'test_cases': test_cases,
