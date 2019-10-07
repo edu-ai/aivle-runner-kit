@@ -10,37 +10,40 @@ class Generator(object):
         pass
 
     def reset(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def pop(self):
-        raise NotImplemented
+        raise NotImplementedError
 
 class EvaluationResult(object):
     def __init__(self, *args, **kwargs):
         pass
 
     def __str__(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def __int__(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def json(self):
-        raise NotImplemented
+        raise NotImplementedError
 
 class Evaluator(object):
     def __init__(self, *args, **kwargs):
         pass
 
     def reset(self, *args, **kwargs):
-        raise NotImplemented
+        raise NotImplementedError
+
+    def run(self, *args, **kwargs):
+        pass
 
     def step(self, *args, **kwargs):
-        raise NotImplemented
+        raise NotImplementedError
 
     def done(self, *args, **kwargs):
-        raise NotImplemented
+        raise NotImplementedError
 
     def terminated(self, e):
         return
@@ -50,7 +53,7 @@ class Evaluator(object):
         return EvaluationResult()
 
 def compute_point(results):
-    raise NotImplemented
+    raise NotImplementedError
 
 
 # Test Taker
@@ -60,13 +63,13 @@ class Agent(object):
         pass
 
     def initialize(self, **kwargs):
-        raise NotImplemented
+        pass
 
     def step(self, state, *args, **kwargs):
-        raise NotImplemented
+        raise NotImplementedError
 
     def update(self, *args, **kwargs):
         return
 
 def create_agent(test_case_id, *args, **kwargs):
-    raise NotImplemented
+    raise NotImplementedError

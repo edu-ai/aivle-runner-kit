@@ -11,13 +11,9 @@ class TestEnv(object):
 
 class BaseTestEnv(TestEnv):
 	def __init__(self, *args, **kwargs):
+		self.agent_init = kwargs.pop('agent_init', {})
 		self.env = kwargs.pop('env')
 		self.evaluator = kwargs.pop('evaluator')
-		self.agent_init = kwargs.pop('agent_init', {})
-		for k, v in kwargs:
-			if hasattr(self, k):
-				raise Exception('Attribute: {} already exists'.format(k))
-			setattr(self, k, v)
 
 	def terminated(self, e):
 		self.evaluator.terminated(e)
@@ -40,28 +36,41 @@ class SupervisedLearningTestEnv(BaseTestEnv):
 
 
 class ReinforcementLearningTestEnv(BaseTestEnv):
+	def __init__(self, *args, **kwargs):
+		self.t_max = kwargs.pop('t_max', None)
+		self.seeds = kwargs.pop('seeds', [])
+		self.use_seeds = len(self.seeds) > 0
+		super().__init__(*args, **kwargs)
+
 	def run(self, agent, *args, **kwargs):
 		runs = kwargs.get('runs', 1)
-		state = self.env.reset()
-		self.evaluator.reset()
+		if self.use_seeds:
+			assert runs == len(self.seeds) and hasattr(self.env, 'random_seed')
+
 		agent.initialize(**self.agent_init)
-		while True:
-			if runs <= 0:
-				break
+		self.evaluator.reset()
 
-			action = agent.step(state)
-			next_state, reward, done, info = self.env.step(action)
+		for run in range(runs):
+			self.evaluator.run()
+			if self.use_seeds:
+				self.env.random_seed = self.seeds[run]
+			state = self.env.reset()
+			t = 0
+			while True:
+				action = agent.step(state)
+				next_state, reward, done, info = self.env.step(action)
 
-			full_state = {
-				'state': state, 'action': action, 'reward': reward, 
-				'next_state': next_state, 'done': done, 'info': info, 'runs': runs
-			}
-			agent.update(**full_state)
-			self.evaluator.step(**full_state)
+				full_state = {
+					'state': state, 'action': action, 'reward': reward, 'next_state': next_state, 
+					'done': done, 'info': info, 't': t, 'run': run
+				}
+				agent.update(**full_state)
+				self.evaluator.step(**full_state)
 
-			state = next_state
-			if done:
-				runs -= 1
-				self.env.reset()
+				state = next_state
+				if done or self.t_max is not None and t >= self.t_max:
+					break
+				t += 1
+
 		self.evaluator.done()
 		return self.evaluator.result
