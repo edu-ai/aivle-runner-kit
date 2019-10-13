@@ -91,7 +91,7 @@ class RewardEvaluator(BaseEvaluator):
         self.run_cum_rewards = [sum(rewards) for rewards in self.runs]
         self.cum_rewards = sum(self.run_cum_rewards)
         if self.average:
-            self.cum_rewards = self.cum_rewards / self.run_length
+            self.cum_rewards = self.cum_rewards / max(1, self.run_length)
 
     @property
     def result(self):

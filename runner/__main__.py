@@ -27,7 +27,7 @@ def main():
 
 	output = test_suite.run(create_agent)
 
-	print(test_suite.json_output)
+	print(output.json)
 
 if __name__ == "__main__":
 	main()
