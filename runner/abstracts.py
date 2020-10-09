@@ -65,6 +65,9 @@ class Agent(object):
     def initialize(self, **kwargs):
         pass
 
+    def reset(self, state, *args, **kwargs):
+        pass
+
     def step(self, state, *args, **kwargs):
         raise NotImplementedError
 

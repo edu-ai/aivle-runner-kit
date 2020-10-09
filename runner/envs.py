@@ -55,6 +55,7 @@ class ReinforcementLearningTestEnv(BaseTestEnv):
 			if self.use_seeds:
 				self.env.random_seed = self.seeds[run]
 			state = self.env.reset()
+			agent.reset(state)
 			t = 0
 			while True:
 				action = agent.step(state)
