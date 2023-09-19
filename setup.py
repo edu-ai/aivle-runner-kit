@@ -4,7 +4,7 @@ setup(name='runner',
     version='0.0.1',
     author="Muhammad Rizki Aulia Rahman Maulana",
     author_email="rizki@rizkiarm.com",
-    install_requires=['gym', 'numpy', 'sklearn'],
+    install_requires=['gym', 'numpy', 'scikit-learn'],
     packages=find_packages(),
     entry_points={
         "console_scripts": [
